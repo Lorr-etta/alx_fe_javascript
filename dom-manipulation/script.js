@@ -33,18 +33,36 @@ function addQuote() {
 
   if (text && category) {
     const newQuote = { text, category };
-    quotes.push({ newQuote });
+    quotes.push(newQuote);
     saveQuotes();
     populateCategories();
     alert("Quote added!");
 
-    //Send to server
+    // Send to simulated server
     postQuoteToServer(newQuote);
 
     document.getElementById("newQuoteText").value = "";
     document.getElementById("newQuoteCategory").value = "";
   } else {
     alert("Please fill in both fields.");
+  }
+}
+
+// Simulate sending quote to a server using POST
+async function postQuoteToServer(quote) {
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(quote)
+    });
+
+    const result = await response.json();
+    console.log("Posted to server:", result);
+  } catch (error) {
+    console.error("Error posting to server:", error);
   }
 }
 
@@ -144,6 +162,12 @@ async function postQuoteToServer(quote) {
   } catch (error) {
     console.error("Error posting to server:", error);
   }
+}
+
+// Required function: syncQuotes (calls fetchQuotesFromServer)
+async function syncQuotes() {
+  await fetchQuotesFromServer();
+  console.log("Quotes synced with server via syncQuotes()");
 }
 
 // Required for submission
