@@ -170,6 +170,9 @@ async function syncQuotes() {
   console.log("Quotes synced with server via syncQuotes()");
 }
 
+// Periodic syncing with server every 30 seconds
+setInterval(syncQuotes, 30000); // 30000 milliseconds = 30 seconds
+
 // Required for submission
 function filterQuote() {
   showRandomQuote();
