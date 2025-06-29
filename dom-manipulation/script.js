@@ -167,7 +167,7 @@ async function postQuoteToServer(quote) {
 // Required function: syncQuotes (calls fetchQuotesFromServer)
 async function syncQuotes() {
   await fetchQuotesFromServer();
-  console.log("Quotes synced with server via syncQuotes()");
+  console.log("Quotes synced with server!");
 }
 
 // Periodic syncing with server every 30 seconds
