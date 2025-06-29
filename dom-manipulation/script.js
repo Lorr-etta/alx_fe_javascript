@@ -129,7 +129,20 @@ function filterQuote() {
   showRandomQuote();
 }
 
+// Simulated fetch function to load quotes from a "server"
+function fetchQuotesFromServer() {
+  const serverQuotes = [
+    { text: "Hard work beats talent when talent doesn't work hard.", category: "Motivation" },
+    { text: "Productivity is never an accident.", category: "Productivity" }
+  ];
+
+  quotes.push(...serverQuotes);
+  saveQuotes();
+  populateCategories();
+}
+
 // Initialize everything
+fetchQuotesFormServer()
 createCategoryFilter();
 createAddQuoteForm();
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
