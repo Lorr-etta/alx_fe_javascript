@@ -124,6 +124,11 @@ function importFromJsonFile(event) {
   fileReader.readAsText(event.target.files[0]);
 }
 
+// Required function for submission
+function filterQuote() {
+  showRandomQuote();
+}
+
 // Initialize everything
 createCategoryFilter();
 createAddQuoteForm();
