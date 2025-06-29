@@ -32,10 +32,15 @@ function addQuote() {
   const category = document.getElementById("newQuoteCategory").value.trim();
 
   if (text && category) {
-    quotes.push({ text, category });
+    const newQuote = { text, category };
+    quotes.push({ newQuote });
     saveQuotes();
     populateCategories();
     alert("Quote added!");
+
+    //Send to server
+    postQuoteToServer(newQuote);
+
     document.getElementById("newQuoteText").value = "";
     document.getElementById("newQuoteCategory").value = "";
   } else {
@@ -124,21 +129,20 @@ function importFromJsonFile(event) {
 }
 
 // ✅ Fetch quotes from simulated server
-async function fetchQuotesFromServer() {
+async function postQuoteToServer(quote) {
   try {
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=5');
-    const serverQuotes = await response.json();
-    const formatted = serverQuotes.map(item => ({
-      text: item.title,
-      category: "Server"
-    }));
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(quote)
+    });
 
-    quotes = formatted;
-    saveQuotes();
-    populateCategories();
-    alert("Quotes synced from server.");
+    const result = await response.json();
+    console.log("Posted to server:", result);
   } catch (error) {
-    console.error("Failed to fetch from server:", error);
+    console.error("Error posting to server:", error);
   }
 }
 
