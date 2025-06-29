@@ -11,8 +11,8 @@ function saveQuotes() {
 
 // Show a random quote
 function showRandomQuote() {
-  const category = document.getElementById("categoryFilter")?.value;
-  const filteredQuotes = category && category !== "All"
+  const selectedCategory = document.getElementById("categoryFilter")?.value;
+  const filteredQuotes = selectedCategory && selectedCategory !== "All"
     ? quotes.filter(q => q.category === category)
     : quotes;
 
