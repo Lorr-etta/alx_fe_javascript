@@ -14,8 +14,8 @@ function showRandomQuote() {
 
 // Function to add a new quote
 function addQuote() {
-  const textInput = document.getElementById("newQuoteText").value;
-  const categoryInput = document.getElementById("newQuoteCategory").value;
+  const textInput = document.getElementById("newQuoteText").value.trim();
+  const categoryInput = document.getElementById("newQuoteCategory").value.trim();
 
   if (textInput && categoryInput) {
     quotes.push({ text: textInput, category: categoryInput });
@@ -27,5 +27,6 @@ function addQuote() {
   }
 }
 
-// Event listener
+// Event listeners
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
+document.getElementById("addQuote").addEventListener("click", addQuote);
