@@ -9,11 +9,11 @@ function saveQuotes() {
   localStorage.setItem("quotes", JSON.stringify(quotes));
 }
 
-// Show a random quote
+// Show a random quote (filtered by selected category)
 function showRandomQuote() {
   const selectedCategory = document.getElementById("categoryFilter")?.value;
   const filteredQuotes = selectedCategory && selectedCategory !== "All"
-    ? quotes.filter(q => q.category === category)
+    ? quotes.filter(q => q.category === selectedCategory)
     : quotes;
 
   if (filteredQuotes.length === 0) {
@@ -23,7 +23,7 @@ function showRandomQuote() {
 
   const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
   const quote = filteredQuotes[randomIndex];
-  document.getElementById("quoteDisplay").innerHTML = <p><strong>${quote.category}:</strong> ${quote.text}</p>;
+  document.getElementById("quoteDisplay").innerHTML = `<p><strong>${quote.category}:</strong> ${quote.text}</p>`;
 }
 
 // Add a new quote
@@ -34,7 +34,7 @@ function addQuote() {
   if (text && category) {
     quotes.push({ text, category });
     saveQuotes();
-    populateCategories(); // update filter list
+    populateCategories();
     alert("Quote added!");
     document.getElementById("newQuoteText").value = "";
     document.getElementById("newQuoteCategory").value = "";
@@ -43,7 +43,7 @@ function addQuote() {
   }
 }
 
-// Dynamically create quote form
+// Create add quote form
 function createAddQuoteForm() {
   const formDiv = document.createElement("div");
 
@@ -69,7 +69,7 @@ function createAddQuoteForm() {
   document.body.appendChild(formDiv);
 }
 
-// Create category dropdown filter
+// Create category filter
 function createCategoryFilter() {
   const select = document.createElement("select");
   select.id = "categoryFilter";
@@ -78,13 +78,12 @@ function createCategoryFilter() {
   populateCategories();
 }
 
-// Populate category filter with unique values
+// Populate dropdown
 function populateCategories() {
   const select = document.getElementById("categoryFilter");
   select.innerHTML = "";
 
   const categories = ["All", ...new Set(quotes.map(q => q.category))];
-
   categories.forEach(category => {
     const option = document.createElement("option");
     option.value = category;
@@ -93,7 +92,7 @@ function populateCategories() {
   });
 }
 
-// Export quotes to JSON
+// Export quotes
 function exportToJson() {
   const blob = new Blob([JSON.stringify(quotes, null, 2)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
@@ -103,10 +102,10 @@ function exportToJson() {
   link.click();
 }
 
-// Import quotes from JSON
+// Import quotes
 function importFromJsonFile(event) {
   const fileReader = new FileReader();
-  fileReader.onload = function(e) {
+  fileReader.onload = function (e) {
     try {
       const importedQuotes = JSON.parse(e.target.result);
       if (Array.isArray(importedQuotes)) {
@@ -115,34 +114,41 @@ function importFromJsonFile(event) {
         populateCategories();
         alert("Quotes imported successfully!");
       } else {
-        alert("Invalid format.");
+        alert("Invalid JSON format.");
       }
-    } catch (err) {
-      alert("Error reading file.");
+    } catch (error) {
+      alert("Error reading JSON file.");
     }
   };
   fileReader.readAsText(event.target.files[0]);
 }
 
-// Required function for submission
+// ✅ Fetch quotes from simulated server
+async function fetchQuotesFromServer() {
+  try {
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=5');
+    const serverQuotes = await response.json();
+    const formatted = serverQuotes.map(item => ({
+      text: item.title,
+      category: "Server"
+    }));
+
+    quotes = formatted;
+    saveQuotes();
+    populateCategories();
+    alert("Quotes synced from server.");
+  } catch (error) {
+    console.error("Failed to fetch from server:", error);
+  }
+}
+
+// Required for submission
 function filterQuote() {
   showRandomQuote();
 }
 
-// Simulated fetch function to load quotes from a "server"
-function fetchQuotesFromServer() {
-  const serverQuotes = [
-    { text: "Hard work beats talent when talent doesn't work hard.", category: "Motivation" },
-    { text: "Productivity is never an accident.", category: "Productivity" }
-  ];
-
-  quotes.push(...serverQuotes);
-  saveQuotes();
-  populateCategories();
-}
-
-// Initialize everything
-fetchQuotesFormServer()
+// Initialize
+fetchQuotesFromServer(); // Initial sync
 createCategoryFilter();
 createAddQuoteForm();
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
